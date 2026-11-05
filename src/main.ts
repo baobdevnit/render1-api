@@ -8,6 +8,14 @@ async function bootstrap() {
     instrument: ObserveInstrument,
   });
 
+  // Cho phép CORS để Frontend (SPA/SSR) có thể kết nối thuận tiện
+  app.enableCors({
+    origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : true,
+    credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

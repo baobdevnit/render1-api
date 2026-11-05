@@ -27,6 +27,19 @@ Demo nestjs app deploy to Render
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+---
+
+## 🚀 Tài Liệu Bàn Giao Cho Front-End Developer
+
+Tài liệu kỹ thuật chi tiết, hợp đồng dữ liệu TypeScript, cấu hình CORS, kịch bản xác thực và kiến trúc mẫu dành cho đội ngũ phát triển Front-End được lưu trữ tại:
+👉 **[Xem Tài Liệu Bàn Giao Front-End (docs/FRONTEND_HANDOVER.md)](file:///d:/Code/render1/my-first-api/docs/FRONTEND_HANDOVER.md)**
+
+- **Scalar API Reference (Interactive UI):** `http://localhost:3000/scalar`
+- **OpenAPI Schema:** `http://localhost:3000/openapi.json`
+- **Tài khoản Admin kiểm thử:** `admin@example.com` / `Admin@123456`
+
+---
+
 ## Project setup
 
 ```bash
@@ -133,6 +146,75 @@ Endpoint được bảo vệ bởi [`AuthGuard`](file:///d:/Code/render1/my-firs
   - `200 OK`: Trả về mảng danh sách người dùng đã đăng ký (đã loại bỏ mật khẩu hash).
   - `401 Unauthorized`: Chưa truyền token hoặc token không hợp lệ.
   - `403 Forbidden`: Người dùng thường (`role: 'user'`) không được phép truy cập.
+
+---
+
+## Health Check API (Chuẩn IETF Draft)
+
+Dự án cung cấp endpoint kiểm tra định kỳ (Health Check) tuân thủ tiêu chuẩn RFC Draft: **"Health Check Response Format for HTTP APIs"** (`draft-inadarei-api-health-check`):
+
+- **Endpoints:**
+  - `GET /health` (và alias `GET /healthz`): Kiểm tra sức khỏe toàn diện (Uptime, Memory, kết nối cơ sở dữ liệu Supabase).
+  - `GET /health/live`: Liveness Probe cho orchestrator (kiểm tra tiến trình Node.js cục bộ).
+  - `GET /health/ready`: Readiness Probe (kiểm tra khả năng sẵn sàng của Supabase DB).
+- **MIME Type:** `Content-Type: application/health+json; charset=utf-8`
+- **Cache Header:** `Cache-Control: no-cache, no-store, must-revalidate`
+- **HTTP Status Code Mapping:**
+  - `200 OK`: Khi `status` là `"pass"` hoặc `"warn"`.
+  - `503 Service Unavailable`: Khi `status` là `"fail"`.
+- **Cấu trúc JSON mẫu:**
+
+```json
+{
+  "status": "pass",
+  "version": "1",
+  "releaseId": "0.0.1",
+  "notes": ["Tất cả hệ thống và dịch vụ phụ thuộc đều hoạt động bình thường."],
+  "serviceId": "my-first-api",
+  "description": "Health status for my-first-api conforming to IETF Draft specification",
+  "checks": {
+    "system:uptime": [
+      {
+        "componentId": "node-process",
+        "componentType": "system",
+        "status": "pass",
+        "observedValue": 3600,
+        "observedUnit": "s",
+        "time": "2026-11-05T05:44:00.000Z",
+        "output": "Tiến trình hoạt động ổn định trong 3600 giây"
+      }
+    ],
+    "system:memory": [
+      {
+        "componentId": "node-heap",
+        "componentType": "system",
+        "status": "pass",
+        "observedValue": 45.32,
+        "observedUnit": "MB",
+        "time": "2026-11-05T05:44:00.000Z",
+        "output": "Bộ nhớ sử dụng bình thường: 45.32MB / 60.5MB"
+      }
+    ],
+    "datastore:supabase": [
+      {
+        "componentId": "supabase-database",
+        "componentType": "datastore",
+        "status": "pass",
+        "observedValue": 25,
+        "observedUnit": "ms",
+        "time": "2026-11-05T05:44:00.000Z",
+        "output": "Kết nối Supabase phản hồi trong 25ms"
+      }
+    ]
+  },
+  "links": {
+    "self": "/health",
+    "docs": "/scalar"
+  }
+}
+```
+
+- **Tích hợp Render:** File [render.yaml](file:///d:/Code/render1/my-first-api/render.yaml) đã được cấu hình thuộc tính `healthCheckPath: /health` để Render tự động ping định kỳ, hỗ trợ zero-downtime deploy và tự phục hồi khi có sự cố.
 
 ---
 

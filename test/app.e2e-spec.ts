@@ -56,6 +56,47 @@ describe('AppController & Scalar Docs (e2e)', () => {
     expect(response.text).toContain('Scalar API Reference');
   });
 
+  it('/health (GET) should return IETF Draft health json format', async () => {
+    const response = await request(app.getHttpServer()).get('/health');
+
+    // HTTP 200 (pass/warn) or 503 (fail depending on network/Supabase)
+    expect([200, 503]).toContain(response.status);
+    expect(response.headers['content-type']).toContain(
+      'application/health+json',
+    );
+    expect(response.headers['cache-control']).toBe(
+      'no-cache, no-store, must-revalidate',
+    );
+    expect(['pass', 'warn', 'fail']).toContain(response.body.status);
+    expect(response.body).toHaveProperty('version');
+    expect(response.body).toHaveProperty('releaseId');
+    expect(response.body).toHaveProperty('checks');
+    expect(response.body.checks).toHaveProperty('system:uptime');
+    expect(response.body.checks).toHaveProperty('system:memory');
+  });
+
+  it('/healthz (GET) should alias to /health', async () => {
+    const response = await request(app.getHttpServer()).get('/healthz');
+    expect([200, 503]).toContain(response.status);
+    expect(response.headers['content-type']).toContain(
+      'application/health+json',
+    );
+    expect(['pass', 'warn', 'fail']).toContain(response.body.status);
+  });
+
+  it('/health/live (GET) should return 200 for liveness probe', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/health/live')
+      .expect(200);
+
+    expect(response.headers['content-type']).toContain(
+      'application/health+json',
+    );
+    expect(['pass', 'warn']).toContain(response.body.status);
+    expect(response.body.checks).toHaveProperty('system:uptime');
+    expect(response.body.checks).toHaveProperty('system:memory');
+  });
+
   afterEach(async () => {
     await app.close();
   });
