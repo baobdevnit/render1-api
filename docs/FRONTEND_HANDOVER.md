@@ -8,19 +8,26 @@
 
 ## 1. Tổng Quan Hệ Thống & Tài Liệu API Tương Tác
 
-### 1.1. Thông Tin Máy Chủ API
+### 1.1. Thông Tin Máy Chủ API & Front-End Triển Khai
+- **Front-End Production URL (Vercel):** `https://vercel1-react.vercel.app`
+- **Render Production API URL:** `https://render1-api.onrender.com`
 - **Local Development URL:** `http://localhost:3000`
-- **Render Production / Staging URL:** `https://<ten-service-render>.onrender.com` (tùy cấu hình deploy trên Render)
-- **CORS Support:** Backend đã cấu hình sẵn CORS cho phép credentials (`Authorization`, cookies) và các origin từ `localhost` (`http://localhost:5173`, `http://localhost:3000`, v.v.).
+- **CORS Support:** Backend đã cấu hình sẵn CORS bảo mật với credentials (`Authorization`, cookies) từ các nguồn:
+  - Front-End Production: `https://vercel1-react.vercel.app`
+  - Vercel Preview Deployments: Mọi nhánh preview dạng `https://vercel1-react-*.vercel.app`
+  - Localhost Development: `http://localhost:5173`, `http://localhost:3000`, `http://localhost:4173`, `http://127.0.0.1:5173`
+  - Tùy biến mở rộng qua biến môi trường `CORS_ORIGIN`
 - **Content-Type Mặc Định:** `application/json; charset=utf-8`
 
 ### 1.2. Công Cụ Trực Quan Cho Front-End Dev
 Backend tích hợp sẵn giao diện trực quan chuẩn OpenAPI:
 - **Scalar API Reference (Giao diện hiện đại kiểm thử API trực tiếp):**
-  - URL: `http://localhost:3000/scalar` (hoặc `http://localhost:3000/reference`)
+  - Production: `https://render1-api.onrender.com/scalar` (hoặc `/reference`)
+  - Local: `http://localhost:3000/scalar` (hoặc `/reference`)
   - Chức năng: Đọc chi tiết schema, thử nghiệm gọi request ngay trên trình duyệt, có sẵn nút paste **Bearer Token** để test các route yêu cầu xác thực.
 - **OpenAPI Schema (JSON Spec thô):**
-  - URL: `http://localhost:3000/openapi.json`
+  - Production: `https://render1-api.onrender.com/openapi.json`
+  - Local: `http://localhost:3000/openapi.json`
   - Chức năng: Dùng để sinh tự động TypeScript types, TanStack Query hooks bằng các công cụ như `openapi-typescript` hoặc `orval`.
 
 ---

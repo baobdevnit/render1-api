@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule, ObserveInstrument } from './app.module.js';
+import { setupCors } from './cors.setup.js';
 import { setupScalar } from './scalar.setup.js';
 
 async function bootstrap() {
@@ -8,13 +9,8 @@ async function bootstrap() {
     instrument: ObserveInstrument,
   });
 
-  // Cho phép CORS để Frontend (SPA/SSR) có thể kết nối thuận tiện
-  app.enableCors({
-    origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : true,
-    credentials: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type, Accept, Authorization',
-  });
+  // Cấu hình CORS tối ưu cho Frontend đã triển khai trên Vercel và môi trường phát triển cục bộ
+  setupCors(app);
 
   app.useGlobalPipes(
     new ValidationPipe({

@@ -4,9 +4,10 @@ import request from 'supertest';
 import { App } from 'supertest/types.js';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { AppModule } from '../src/app.module.js';
+import { setupCors } from '../src/cors.setup.js';
 import { setupScalar } from '../src/scalar.setup.js';
 
-describe('AppController & Scalar Docs (e2e)', () => {
+describe('AppController, Scalar Docs & CORS (e2e)', () => {
   let app: INestApplication<App>;
 
   beforeEach(async () => {
@@ -15,6 +16,7 @@ describe('AppController & Scalar Docs (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    setupCors(app);
     setupScalar(app);
     await app.init();
   });
@@ -95,6 +97,46 @@ describe('AppController & Scalar Docs (e2e)', () => {
     expect(['pass', 'warn']).toContain(response.body.status);
     expect(response.body.checks).toHaveProperty('system:uptime');
     expect(response.body.checks).toHaveProperty('system:memory');
+  });
+
+  describe('CORS preflight & Origin verification', () => {
+    it('cho phép origin từ Front-end production https://vercel1-react.vercel.app', async () => {
+      const response = await request(app.getHttpServer())
+        .options('/auth/login')
+        .set('Origin', 'https://vercel1-react.vercel.app')
+        .set('Access-Control-Request-Method', 'POST')
+        .set('Access-Control-Request-Headers', 'Content-Type, Authorization')
+        .expect(204);
+
+      expect(response.headers['access-control-allow-origin']).toBe(
+        'https://vercel1-react.vercel.app',
+      );
+      expect(response.headers['access-control-allow-credentials']).toBe('true');
+    });
+
+    it('cho phép origin từ Vercel preview branch deployment', async () => {
+      const previewOrigin = 'https://vercel1-react-pr-42.vercel.app';
+      const response = await request(app.getHttpServer())
+        .options('/health')
+        .set('Origin', previewOrigin)
+        .set('Access-Control-Request-Method', 'GET')
+        .expect(204);
+
+      expect(response.headers['access-control-allow-origin']).toBe(previewOrigin);
+      expect(response.headers['access-control-allow-credentials']).toBe('true');
+    });
+
+    it('cho phép origin từ local development http://localhost:5173', async () => {
+      const localOrigin = 'http://localhost:5173';
+      const response = await request(app.getHttpServer())
+        .options('/auth/login')
+        .set('Origin', localOrigin)
+        .set('Access-Control-Request-Method', 'POST')
+        .expect(204);
+
+      expect(response.headers['access-control-allow-origin']).toBe(localOrigin);
+      expect(response.headers['access-control-allow-credentials']).toBe('true');
+    });
   });
 
   afterEach(async () => {

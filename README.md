@@ -1,6 +1,16 @@
 # render1-api
 
-Demo nestjs app deploy to Render
+Nền tảng Backend API xây dựng trên **NestJS 11 + Supabase PostgreSQL + JWT Authentication**, tích hợp Swagger & Scalar API Reference, sẵn sàng triển khai trên **Render** và kết nối trực tiếp với Front-End trên **Vercel**.
+
+---
+
+## 🌐 Hệ Thống Trực Tuyến Đang Hoạt Động
+
+- 🌐 **Front-End Application (Vercel):** [https://vercel1-react.vercel.app](https://vercel1-react.vercel.app)
+- 🚀 **Backend API Service (Render):** [https://render1-api.onrender.com](https://render1-api.onrender.com)
+- 📖 **Scalar API Documentation:** [https://render1-api.onrender.com/scalar](https://render1-api.onrender.com/scalar) (hoặc `/reference`)
+- 📄 **OpenAPI Specification (JSON):** [https://render1-api.onrender.com/openapi.json](https://render1-api.onrender.com/openapi.json)
+- ❤️ **Health Check Endpoint (IETF Draft):** [https://render1-api.onrender.com/health](https://render1-api.onrender.com/health)
 ---
 
 <p align="center">
@@ -34,7 +44,8 @@ Demo nestjs app deploy to Render
 Tài liệu kỹ thuật chi tiết, hợp đồng dữ liệu TypeScript, cấu hình CORS, kịch bản xác thực và kiến trúc mẫu dành cho đội ngũ phát triển Front-End được lưu trữ tại:
 👉 **[Xem Tài Liệu Bàn Giao Front-End (docs/FRONTEND_HANDOVER.md)](file:///d:/Code/render1/my-first-api/docs/FRONTEND_HANDOVER.md)**
 
-- **Scalar API Reference (Interactive UI):** `http://localhost:3000/scalar`
+- **Front-End Production:** [https://vercel1-react.vercel.app](https://vercel1-react.vercel.app)
+- **Scalar API Reference (Interactive UI):** [https://render1-api.onrender.com/scalar](https://render1-api.onrender.com/scalar) (hoặc local `http://localhost:3000/scalar`)
 - **OpenAPI Schema:** `http://localhost:3000/openapi.json`
 - **Tài khoản Admin kiểm thử:** `admin@example.com` / `Admin@123456`
 

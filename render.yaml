@@ -10,6 +10,8 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 22
+      - key: CORS_ORIGIN
+        value: https://vercel1-react.vercel.app,http://localhost:5173,http://localhost:3000
       - key: SUPABASE_URL
         sync: false
       - key: SUPABASE_SECRET_KEY
